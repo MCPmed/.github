@@ -22,5 +22,4 @@ cookiecutter MCPmedtemplate
 ## Mission
 
 * **Accelerate translational science** – expose curated clinical and molecular datasets through self-describing MCP manifests so agents can query datasets, cohorts, or biomarkers programmatically.  
-* **Ensure reproducibility & provenance** – embed study metadata, versioned schemas, and audit trails directly in the MCP layer to satisfy regulatory and GMP needs.  
 * **Lower adoption barriers** – ship MIT-licensed templates
