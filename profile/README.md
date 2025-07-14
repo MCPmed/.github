@@ -1,4 +1,4 @@
-# MCPmed 🚧 *coming soon*
+# MCPmed 🚧 *work in progress*
 
 More info: https://mcpmed.org
 
@@ -25,3 +25,16 @@ cookiecutter MCPmedtemplate
 
 * **Accelerate translational science** – expose curated clinical and molecular datasets through self-describing MCP manifests so agents can query datasets, cohorts, or biomarkers programmatically.  
 * **Lower adoption barriers** – ship MIT-licensed templates
+
+## Citation
+```bibtex
+@misc{flotho2025mcpmedmcpenabledbioinformaticsweb,
+      title={MCPmed: A Call for MCP-Enabled Bioinformatics Web Services for LLM-Driven Discovery}, 
+      author={Matthias Flotho and Ian Ferenc Diks and Philipp Flotho and Leidy-Alejandra G. Molano and Pascal Hirsch and Andreas Keller},
+      year={2025},
+      eprint={2507.08055},
+      archivePrefix={arXiv},
+      primaryClass={q-bio.OT},
+      url={https://arxiv.org/abs/2507.08055}, 
+}
+```
