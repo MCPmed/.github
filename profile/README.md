@@ -1,5 +1,5 @@
 # MCPmed 
-
+![Graphical Abstract](./graphical%20abstract.png)
 More info: https://mcpmed.org
 ## Introduction
 Welcome to MCPmed, a comprehensive collection of Model Context Protocol (MCP) servers designed for seamless integration with biological and biomedical databases. This project aims to bridge the gap between large language models and scientific data resources, enabling AI-assisted research workflows in bioinformatics and computational biology.
