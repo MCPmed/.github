@@ -1,6 +1,7 @@
-# MCPmed 
-![Graphical Abstract](./graphical%20abstract.png)
+# MCPmed
 More info: https://mcpmed.org
+![Graphical Abstract](./graphical%20abstract.png)
+
 ## Introduction
 Welcome to MCPmed, a comprehensive collection of Model Context Protocol (MCP) servers designed for seamless integration with biological and biomedical databases. This project aims to bridge the gap between large language models and scientific data resources, enabling AI-assisted research workflows in bioinformatics and computational biology.
 
@@ -53,6 +54,7 @@ Contributions are welcome. Priority areas include:
 - **Bug Fixes**: Address issues in current MCP servers
 - **Documentation**: Improve technical documentation and usage examples
 
+
 ## Guidelines
 
 - Use the Cookiecutter-MCPmed template for new MCP servers
@@ -62,3 +64,17 @@ Contributions are welcome. Priority areas include:
 - Submit pull requests with clear descriptions
 
 For questions or discussions, use the repository Issues section.
+
+
+## Citation
+```bibtex
+@misc{flotho2025mcpmedmcpenabledbioinformaticsweb,
+      title={MCPmed: A Call for MCP-Enabled Bioinformatics Web Services for LLM-Driven Discovery}, 
+      author={Matthias Flotho and Ian Ferenc Diks and Philipp Flotho and Leidy-Alejandra G. Molano and Pascal Hirsch and Andreas Keller},
+      year={2025},
+      eprint={2507.08055},
+      archivePrefix={arXiv},
+      primaryClass={q-bio.OT},
+      url={https://arxiv.org/abs/2507.08055}, 
+}
+```
