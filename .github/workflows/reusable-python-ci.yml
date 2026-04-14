@@ -1,0 +1,150 @@
+name: Reusable Python CI
+
+# Reusable workflow called by individual MCPmed Python repos. A caller job is
+# a one-liner; all the matrix, install, lint, type-check, and test logic lives
+# here so we can fix or upgrade the pipeline in one place.
+#
+# Example caller (.github/workflows/ci.yml in a downstream repo):
+#
+#   name: CI
+#   on:
+#     push: { branches: [main] }
+#     pull_request:
+#   jobs:
+#     ci:
+#       uses: MCPmed/.github/.github/workflows/reusable-python-ci.yml@main
+#       with:
+#         package-name: geomcp
+#         python-versions: "['3.10','3.11','3.12']"
+
+on:
+  workflow_call:
+    inputs:
+      package-name:
+        description: "Python package directory to type-check (e.g. 'geomcp'). Required if run-mypy is true."
+        type: string
+        required: false
+        default: ""
+      python-versions:
+        description: "JSON array of Python versions to test against."
+        type: string
+        required: false
+        default: "['3.10','3.11','3.12']"
+      run-ruff:
+        description: "Run ruff check."
+        type: boolean
+        required: false
+        default: true
+      run-black:
+        description: "Run black --check."
+        type: boolean
+        required: false
+        default: true
+      run-mypy:
+        description: "Run mypy on the package directory."
+        type: boolean
+        required: false
+        default: false
+      run-tests:
+        description: "Run pytest."
+        type: boolean
+        required: false
+        default: true
+      coverage:
+        description: "Collect coverage and upload to Codecov."
+        type: boolean
+        required: false
+        default: true
+      install-extras:
+        description: "Pip extras to install (e.g. 'dev', 'dev,test'). The package is installed editable."
+        type: string
+        required: false
+        default: "dev"
+      working-directory:
+        description: "Subdirectory to run from. Default is the repo root."
+        type: string
+        required: false
+        default: "."
+
+jobs:
+  lint:
+    name: Lint (ruff + black)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install lint tools
+        run: python -m pip install --upgrade pip ruff black
+      - name: Ruff
+        if: ${{ inputs.run-ruff }}
+        run: ruff check .
+      - name: Black
+        if: ${{ inputs.run-black }}
+        run: black --check .
+
+  typecheck:
+    name: Type check (mypy)
+    if: ${{ inputs.run-mypy }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install package and mypy
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[${{ inputs.install-extras }}]" mypy
+      - name: Mypy
+        run: |
+          if [ -z "${{ inputs.package-name }}" ]; then
+            echo "::error::run-mypy is true but package-name was not provided"; exit 1
+          fi
+          mypy "${{ inputs.package-name }}"
+
+  test:
+    name: Test (Python ${{ matrix.python-version }})
+    if: ${{ inputs.run-tests }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ${{ fromJSON(inputs.python-versions) }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[${{ inputs.install-extras }}]"
+      - name: Pytest
+        run: |
+          if [ "${{ inputs.coverage }}" = "true" ]; then
+            python -m pip install pytest pytest-cov
+            pytest --cov --cov-report=xml --cov-report=term
+          else
+            python -m pip install pytest
+            pytest
+          fi
+      - name: Upload coverage to Codecov
+        if: ${{ inputs.coverage && matrix.python-version == '3.12' }}
+        uses: codecov/codecov-action@v4
+        with:
+          files: ${{ inputs.working-directory }}/coverage.xml
+          fail_ci_if_error: false

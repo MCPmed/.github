@@ -1,0 +1,9 @@
+# CODEOWNERS for the MCPmed .github repository.
+#
+# This file only affects review assignment for changes to this repo. The
+# special "MCPmed/.github" repo does NOT propagate CODEOWNERS to other repos
+# in the org — each repo owns its own review policy.
+#
+# Update the owner below to a concrete GitHub team or user once available.
+
+*       @MCPmed

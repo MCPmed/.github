@@ -1,0 +1,93 @@
+name: Reusable Python Release
+
+# Builds a Python package with PEP 517 and publishes it to PyPI using
+# a Trusted Publisher (OIDC — no API token stored in GitHub secrets).
+# Also attaches the sdist and wheel to the corresponding GitHub Release.
+#
+# Prerequisites in the caller repo:
+#   1. Create a PyPI project with the package name.
+#   2. Configure a pending Trusted Publisher on PyPI pointing to the caller
+#      repo and the workflow filename that invokes this reusable workflow.
+#   3. A tag push matching the caller's on.push.tags pattern triggers this.
+#
+# Example caller (.github/workflows/release.yml in a downstream repo):
+#
+#   name: Release
+#   on:
+#     push:
+#       tags: ["v*.*.*"]
+#   jobs:
+#     release:
+#       uses: MCPmed/.github/.github/workflows/reusable-release.yml@main
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        description: "Python version used to build the distribution."
+        type: string
+        required: false
+        default: "3.12"
+      working-directory:
+        description: "Subdirectory containing pyproject.toml."
+        type: string
+        required: false
+        default: "."
+
+jobs:
+  build:
+    name: Build distribution
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # required by hatch-vcs / setuptools_scm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
+      - name: Install build tooling
+        run: python -m pip install --upgrade pip build
+      - name: Build sdist and wheel
+        run: python -m build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: ${{ inputs.working-directory }}/dist/
+
+  publish-pypi:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/${{ github.event.repository.name }}
+    permissions:
+      id-token: write  # required for Trusted Publisher OIDC
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  attach-to-release:
+    name: Attach artifacts to GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true

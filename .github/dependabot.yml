@@ -1,0 +1,16 @@
+version: 2
+
+# Dependabot config for the .github repo itself. This keeps the reusable
+# workflow action pins (actions/checkout, setup-python, codecov, etc.) fresh.
+# Downstream repos should ship their own dependabot.yml for their ecosystems.
+
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "dependencies"
+      - "github-actions"
