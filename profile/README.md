@@ -68,13 +68,14 @@ For questions or discussions, use the repository Issues section.
 
 ## Citation
 ```bibtex
-@misc{flotho2025mcpmedmcpenabledbioinformaticsweb,
-      title={MCPmed: A Call for MCP-Enabled Bioinformatics Web Services for LLM-Driven Discovery}, 
-      author={Matthias Flotho and Ian Ferenc Diks and Philipp Flotho and Leidy-Alejandra G. Molano and Pascal Hirsch and Andreas Keller},
-      year={2025},
-      eprint={2507.08055},
-      archivePrefix={arXiv},
-      primaryClass={q-bio.OT},
-      url={https://arxiv.org/abs/2507.08055}, 
+@article{flotho2026mcpmed,
+  title={MCPmed: a call for Model Context Protocol-enabled bioinformatics web services for LLM-driven discovery},
+  author={Flotho, Matthias and Diks, Ian Ferenc and Flotho, Philipp and Molano, Leidy-Alejandra G and Hirsch, Pascal and Keller, Andreas},
+  journal={Briefings in Bioinformatics},
+  volume={27},
+  number={1},
+  pages={bbag076},
+  year={2026},
+  publisher={Oxford University Press}
 }
 ```
